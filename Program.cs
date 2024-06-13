@@ -1,4 +1,5 @@
 using CustomerApi.DataAccess;
+using CustomerApi.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,6 +49,17 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.MapControllers();
+app.MapGet("/", () => Results.Extensions.Html(@"<!doctype html>
+<html>
+    <head>
+        <title>Customer API</title>
+    </head>
+    <body>
+        <h1>Customer API</h1>
+        <p>Customer API is running!</p>
+        <p>The Swagger UI is available at <a href=""/swagger/index.html"">/swagger/index.html</a></p>
+    </body>
+</html>"));
 
 // Run the app
 app.Run();
