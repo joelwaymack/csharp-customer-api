@@ -47,7 +47,6 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
 app.MapControllers();
 app.MapGet("/", () => Results.Extensions.Html(@"<!doctype html>
 <html>
