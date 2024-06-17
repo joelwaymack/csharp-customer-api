@@ -8,10 +8,6 @@ var services = builder.Services;
 
 // Retrieve config values
 var databaseConnectionString = configuration.GetValue<string>("Database:ConnectionString");
-if (string.IsNullOrWhiteSpace(databaseConnectionString))
-{
-    throw new InvalidOperationException("Database connection string is required");
-}
 
 // Set up dependency injection
 services.AddEndpointsApiExplorer();
@@ -30,10 +26,21 @@ services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
-services.AddDbContext<CustomerContext>(options =>
+
+if (!string.IsNullOrWhiteSpace(databaseConnectionString))
 {
-    options.UseSqlServer(databaseConnectionString);
-});
+    services.AddDbContext<CustomerContext>(options =>
+    {
+        options.UseSqlServer(databaseConnectionString);
+    });
+}
+else
+{
+    services.AddDbContext<CustomerContext>(options =>
+    {
+        options.UseSqlite("Data Source=customer.db");
+    });
+}
 
 // Run database migrations
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
