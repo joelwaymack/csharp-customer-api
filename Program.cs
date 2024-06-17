@@ -27,8 +27,10 @@ services.AddCors(options =>
     });
 });
 
+string databaseProvider;
 if (!string.IsNullOrWhiteSpace(databaseConnectionString))
 {
+    databaseProvider = "SqlServer";
     services.AddDbContext<CustomerContext>(options =>
     {
         options.UseSqlServer(databaseConnectionString);
@@ -36,22 +38,23 @@ if (!string.IsNullOrWhiteSpace(databaseConnectionString))
 }
 else
 {
+    databaseProvider = "Sqlite";
     services.AddDbContext<CustomerContext>(options =>
     {
         options.UseSqlite("Data Source=customer.db");
     });
 }
 
-// Run database migrations
-#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-using var scope = services.BuildServiceProvider().CreateScope();
-#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+// Set up the app
+var app = builder.Build();
+
+// Apply database migrations
+app.Logger.LogInformation($"Using {databaseProvider} database provider");
+using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<CustomerContext>();
 context.Database.Migrate();
 
 // Set up request processing pipeline
-var app = builder.Build();
-
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
