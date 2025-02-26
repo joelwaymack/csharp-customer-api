@@ -1,0 +1,15 @@
+@hostname = https://way-aca-customer-api-aca.thankfulsky-def92449.centralus.azurecontainerapps.io/
+
+### Post new customer
+POST {{hostname}}/customers
+
+{
+  "firstName": "joel",
+  "lastName": "waymack",
+  "email": "joel.waymack@microsoft.com",
+  "phone": "123-456-7890"
+}
+
+
+### Get all customers
+GET {{hostname}}/customers
